@@ -1,0 +1,95 @@
+
+
+<script type="text/javascript">
+
+
+  function display_upload() {
+    var ele = document.getElementsByName('analysis_type')
+    for(i = 0; i < ele.length; i++) {
+      if(ele[i].checked){
+        if (ele[i].value == "fisher")
+        {
+          document.getElementById('fisher_file_upload').style.display = 'block';
+          document.getElementById('market_basket_file_upload').style.display='none';
+          document.getElementById('school_usage_file_upload').style.display='none';
+          document.getElementById('waiting_message').style.display='none';
+
+        }
+        else if (ele[i].value == "school_usage") 
+        {
+          document.getElementById('school_usage_file_upload').style.display = 'block';
+          document.getElementById('market_basket_file_upload').style.display='none';
+          document.getElementById('fisher_file_upload').style.display='none';
+          document.getElementById('waiting_message').style.display='none';
+        }
+        else
+        {
+          document.getElementById('school_usage_file_upload').style.display = 'none';
+          document.getElementById('market_basket_file_upload').style.display='block';
+          document.getElementById('fisher_file_upload').style.display='none';
+          document.getElementById('waiting_message').style.display='none';
+        }
+        setTimeout('getstatus()', 1000);
+      }
+    }
+    
+  }
+
+  
+</script>
+
+
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
+<body onload="
+document.getElementById('school_usage_file_upload').style.display='none'; 
+document.getElementById('market_basket_file_upload').style.display='none'; 
+document.getElementById('fisher_file_upload').style.display='none';
+document.getElementById('waiting_message').style.display='none';
+"></body>
+
+<p>Please select which data analysis you would like to perform:</p>
+<form action="{{ url_for('get_analysis_type') }}" method="post"  target="dummyframe">
+  <input type="radio" id="school_usage" name="analysis_type" value="school_usage">
+  <label for="school_usage">School Usage Analysis</label><br>
+
+  <input type="radio" id="market_basket" name="analysis_type" value="market_basket">
+  <label for="market_basket">Market Basket Analysis</label><br>
+
+  <input type="radio" id="fisher" name="analysis_type" value="fisher">
+  <label for="fisher">Fisher-School Comparison</label>
+  <br>
+  <input type="submit" onclick="display_upload()" name="button" class="btn btn-success" value="Next">
+
+</form>
+
+<form id="school_usage_file_upload" action="{{ url_for('get_school_usage_file_dirs') }}" method="post" target="dummyframe" enctype="multipart/form-data">
+  Lab Supplies Usage Data (xlsx): <input type="file" id="file" name="file" required/>
+  <br>
+  <input type="submit" onclick="document.getElementById('waiting_message').style.display='block'"/>
+</form>
+
+<form id="market_basket_file_upload" action="{{ url_for('get_market_basket_file_dirs') }}" method="post" target="dummyframe" enctype="multipart/form-data">
+  Market Basket To Date (xlsx): <input type="file" id="file" name="file" required/>
+  <br>
+  <input type="submit" onclick="document.getElementById('waiting_message').style.display='block'"/>
+</form>
+
+<form id="fisher_file_upload" action="{{ url_for('get_fisher_file_dirs') }}" method="post" target="dummyframe" enctype="multipart/form-data">
+  Year(s): <input type="text" id="year" name="year" placeholder="2022"/>
+  <br>
+  <label>(Will default to 2022 unless specified otherwise)</label>
+  <br><br>
+  Fisher Proposed Hotlist (xlsx): <input type="file" id="file1" name="file1" required/>
+  <br>
+  Master BTAA Lab Supplies (xlsx): <input type="file" id="file2" name="file2" required/>
+  <br>
+  <input type="submit" onclick="document.getElementById('waiting_message').style.display='block'"/>
+</form>
+
+<div id="waiting_message">Please Wait, Data Processing...</div>
+
+
+
+
+
